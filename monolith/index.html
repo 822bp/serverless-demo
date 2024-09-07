@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <h1>
+        Willkommen zur Steuererklaerung
+    </h1>
+    <p>
+        Lade deine Datei hoch, um deine Steuererklaerungs-ID zu bekommen:
+    </p>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" accept=".json" required>
+        <button type="submit">Hochladen</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('${hostUrl}/upload', {
+                method: 'POST',
+                body: file,
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Upload erfolgreich: ' + JSON.stringify(data));
+                window.location.href = "${hostUrl}/result?result=" + data;
+            })
+            .catch(error => {
+                console.error('Fehler beim Hochladen:', error);
+                alert('Fehler beim Hochladen');
+            });
+        });
+    </script>
+</html>
