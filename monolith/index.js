@@ -34,9 +34,6 @@ const home = () => {
                 const fileInput = document.getElementById('fileInput');
                 const file = fileInput.files[0];
     
-                const formData = new FormData();
-                formData.append('file', file);
-    
                 fetch('http://${publicUrl}/upload', {
                     method: 'POST',
                     body: file,
@@ -135,14 +132,15 @@ const requestListener = (req, res) => {
         case "/upload":
             let body = '';
             let jsonData;
-            req.on('data', (chunk) => {
+            req.on("data", (chunk) => {
                 body += chunk;
+            });
+            req.on("end", () => {
                 jsonData = JSON.parse(body);
                 res.setHeader("Content-Type", "application/json");
-                res.writeHead(200);
+                res.writeHead(200);            
                 res.end(JSON.stringify(calcTaxes(jsonData)));
-                body = "";
-            });
+            })
             break;
         default:
             res.setHeader("Content-Type", "application/json");

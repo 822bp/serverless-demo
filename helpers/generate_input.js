@@ -3,7 +3,7 @@
 const fs = require("node:fs");
 
 // SET LENGTH OF BILLS
-const length = 1000;
+const length = 10000;
 // SET FILENAME
 const fileName = "output";
 
