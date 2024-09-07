@@ -6,6 +6,7 @@ const { createHmac } = require("node:crypto");
 
 const host = process.env.HOST;
 const port = process.env.PORT;
+const publicUrl = process.env.PUBLIC_URL;
 const hostUrl = `http://${host}:${port}`;
 
 /*
@@ -36,14 +37,14 @@ const home = () => {
                 const formData = new FormData();
                 formData.append('file', file);
     
-                fetch('${hostUrl}/upload', {
+                fetch('http://${publicUrl}/upload', {
                     method: 'POST',
                     body: file,
                 })
                 .then(response => response.json())
                 .then(data => {
                     alert('Upload erfolgreich: ' + JSON.stringify(data));
-                    window.location.href = "${hostUrl}/result?result=" + data;
+                    window.location.href = "http://${publicUrl}/result?result=" + data;
                 })
                 .catch(error => {
                     console.error('Fehler beim Hochladen:', error);
@@ -106,6 +107,17 @@ const calcTaxes = (bills) => {
 */
 const requestListener = (req, res) => {
     res.setHeader("Content-Type", "text/html");
+
+    // CORS-stuff I copied from chatgpt
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        res.end();
+        return;
+    }
+
     if (req.url.startsWith("/result")) {
         res.writeHead(200);
         const url = new URL(req.url, `http://${req.headers.host}`);
