@@ -1,3 +1,5 @@
 /monolith/.env
 
 /helpers/output.json
+
+/.DS_Store
